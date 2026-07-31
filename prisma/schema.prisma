@@ -1,0 +1,21 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite"; url = env("DATABASE_URL") }
+model AdminUser { id Int @id @default(autoincrement()); username String @unique; passwordHash String; createdAt DateTime @default(now()) }
+model LiveSession { id Int @id @default(autoincrement()); title String; active Boolean @default(false); coins Int @default(0); startedAt DateTime @default(now()); endedAt DateTime? }
+model TikTokViewer { id Int @id @default(autoincrement()); userId String @unique; username String; displayName String; avatarUrl String?; totalCoins Int @default(0); giftCount Int @default(0) }
+model TikTokEvent { id Int @id @default(autoincrement()); eventId String @unique; type String; viewerId String; simulated Boolean @default(false); createdAt DateTime @default(now()) }
+model GiftCatalogItem { id Int @id @default(autoincrement()); giftId String @unique; name String; icon String; coinValue Int }
+model GiftEvent { id Int @id @default(autoincrement()); eventId String @unique; giftId String; viewerId String; comboId String?; repeatCount Int; creditedCount Int @default(0); coins Int; simulated Boolean @default(false); createdAt DateTime @default(now()) }
+model GiftRule { id Int @id @default(autoincrement()); giftId String @unique; name String; icon String; coinValue Int; action String; enabled Boolean @default(true); requiresComment Boolean @default(false); themeDuration Int?; alertTemplate String? }
+model Track { id Int @id @default(autoincrement()); key String @unique; title String; artist String; albumUrl String?; durationMs Int @default(180000); spotifyUri String?; lyrics String?; requests SongRequest[] }
+model SongRequest { id Int @id @default(autoincrement()); trackId Int?; track Track? @relation(fields:[trackId], references:[id]); query String; requesterIds String; requesterNames String; priority Boolean @default(false); status String @default("PENDING"); position Int @default(0); coins Int @default(0); carryOver Boolean @default(false); createdAt DateTime @default(now()) }
+model PlaybackHistory { id Int @id @default(autoincrement()); trackTitle String; artist String; status String; playedAt DateTime @default(now()) }
+model SkipVote { id Int @id @default(autoincrement()); requestId Int; viewerId String; viewerName String; createdAt DateTime @default(now()); @@unique([requestId,viewerId]) }
+model Theme { id Int @id @default(autoincrement()); slug String @unique; name String; background String; cardColor String; borderColor String; particle String; isDefault Boolean @default(false) }
+model ThemeActivation { id Int @id @default(autoincrement()); themeId Int; activatedBy String?; expiresAt DateTime?; active Boolean @default(true); createdAt DateTime @default(now()) }
+model BlockedUser { id Int @id @default(autoincrement()); userId String @unique; reason String? }
+model BlockedTrack { id Int @id @default(autoincrement()); trackKey String @unique; reason String? }
+model BlockedArtist { id Int @id @default(autoincrement()); artist String @unique; reason String? }
+model AppSetting { key String @id; value String; updatedAt DateTime @updatedAt }
+model SpotifyAccount { id Int @id @default(autoincrement()); accessTokenEncrypted String?; refreshTokenEncrypted String?; expiresAt DateTime?; deviceId String?; createdAt DateTime @default(now()) }
+model AuditLog { id Int @id @default(autoincrement()); action String; actor String; details String?; createdAt DateTime @default(now()) }
