@@ -1,0 +1,1 @@
+import type {NormalizedEvent} from '../../../shared/music.js'; export interface TikTokLiveProvider{readonly name:'existing'|'mock';connect():Promise<void>;disconnect():Promise<void>;onEvent(handler:(event:NormalizedEvent)=>void):void;status():{connected:boolean;room?:string}}
